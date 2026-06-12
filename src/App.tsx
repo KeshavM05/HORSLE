@@ -5,15 +5,16 @@ const ANSWER = 'HORSE'
 const MAX_GUESSES = 6
 const WORD_LENGTH = 5
 
+type LetterStatus = 'correct' | 'present' | 'absent'
+
 function App() {
-  const [guesses, setGuesses] = useState([])
+  const [guesses, setGuesses] = useState<string[]>([])
   const [currentGuess, setCurrentGuess] = useState('')
   const [gameOver, setGameOver] = useState(false)
-  const [won, setWon] = useState(false)
   const [shake, setShake] = useState(false)
   const [message, setMessage] = useState('')
 
-  const showMessage = (msg, duration = 2000) => {
+  const showMessage = (msg: string, duration = 2000) => {
     setMessage(msg)
     setTimeout(() => setMessage(''), duration)
   }
@@ -32,7 +33,6 @@ function App() {
 
     if (currentGuess === ANSWER) {
       setGameOver(true)
-      setWon(true)
       const trollMessages = [
         "No way... you guessed HORSE?! 🐴",
         "Wow, incredible detective work! 🕵️",
@@ -46,7 +46,7 @@ function App() {
     }
   }, [currentGuess, guesses])
 
-  const handleKey = useCallback((key) => {
+  const handleKey = useCallback((key: string) => {
     if (gameOver) return
 
     if (key === 'ENTER') {
@@ -59,7 +59,7 @@ function App() {
   }, [gameOver, currentGuess, submitGuess])
 
   useEffect(() => {
-    const onKeyDown = (e) => {
+    const onKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey || e.altKey) return
       if (e.key === 'Enter') handleKey('ENTER')
       else if (e.key === 'Backspace') handleKey('BACKSPACE')
@@ -69,7 +69,7 @@ function App() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [handleKey])
 
-  const getLetterStatus = (guess, index) => {
+  const getLetterStatus = (guess: string, index: number): LetterStatus => {
     const letter = guess[index]
     if (ANSWER[index] === letter) return 'correct'
     if (ANSWER.includes(letter)) return 'present'
@@ -77,7 +77,7 @@ function App() {
   }
 
   const getKeyStatus = () => {
-    const status = {}
+    const status: Record<string, LetterStatus> = {}
     guesses.forEach(guess => {
       guess.split('').forEach((letter, i) => {
         const s = getLetterStatus(guess, i)
@@ -120,7 +120,7 @@ function App() {
               key={rowIndex}
               className={`row ${isCurrentRow && shake ? 'shake' : ''}`}
             >
-              {letters.map((letter, colIndex) => (
+              {letters.map((letter: string, colIndex: number) => (
                 <div
                   key={colIndex}
                   className={`tile ${guess ? getLetterStatus(guess, colIndex) : ''} ${
