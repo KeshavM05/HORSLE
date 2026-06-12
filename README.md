@@ -1,16 +1,38 @@
-# React + Vite
+# 🐴 HORSLE
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Like WORDLE but the word is always HORSE.**
 
-Currently, two official plugins are available:
+A troll word-guessing game where you get 6 tries to figure out the mystery 5-letter word. Spoiler: it's HORSE. It's always HORSE. The game is called HORSLE.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Screenshots
 
-## React Compiler
+| Fresh Game | Winning |
+|:---:|:---:|
+| ![Empty board](screenshots/empty.png) | ![Winning the game](screenshots/win.png) |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+- Classic Wordle gameplay with color-coded hints (green, yellow, gray)
+- Satisfying tile flip animations and shake on invalid guesses
+- On-screen keyboard with color tracking
+- Troll win/lose messages that mock you for playing a game called HORSLE
+- Dark mode (the only mode, obviously)
+- The answer is always HORSE
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Getting Started
+
+```bash
+npm install
+npm run dev
+```
+
+Then open http://localhost:5173 and pretend you don't know the answer.
+
+## Tech Stack
+
+- React
+- Vite
+
+## Why
+
+Because it's funny.
