@@ -100,10 +100,11 @@ function App() {
     <div className="game">
       <header>
         <h1>🐴 HORSLE</h1>
-        <p className="subtitle">Like WORDLE but the word is always HORSE</p>
+        <div className="subtitle-wrapper">
+          <p className="subtitle">Like WORDLE but the word is always HORSE</p>
+          {message && <div className="message">{message}</div>}
+        </div>
       </header>
-
-      {message && <div className="message">{message}</div>}
 
       <div className="board">
         {Array.from({ length: MAX_GUESSES }).map((_, rowIndex) => {
