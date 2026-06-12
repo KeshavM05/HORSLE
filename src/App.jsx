@@ -100,7 +100,7 @@ function App() {
     <div className="game">
       <header>
         <h1>🐴 HORSLE</h1>
-        <p className="subtitle">Guess the 5-letter word!</p>
+        <p className="subtitle">Like WORDLE but the word is always HORSE</p>
       </header>
 
       {message && <div className="message">{message}</div>}
