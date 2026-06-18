@@ -37,8 +37,8 @@ function App() {
     setCurrentGuess('')
     setIsRevealing(true)
 
-    const TILE_DELAY = 500
-    const HALF_FLIP = 400
+    const TILE_DELAY = 300
+    const HALF_FLIP = 250
 
     for (let i = 0; i < WORD_LENGTH; i++) {
       const tileStart = i * TILE_DELAY

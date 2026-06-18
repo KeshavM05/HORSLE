@@ -106,11 +106,11 @@ header h1 {
 }
 
 .tile.flip-in {
-  animation: flipIn 0.4s forwards;
+  animation: flipIn 0.25s forwards;
 }
 
 .tile.flip-out {
-  animation: flipOut 0.4s forwards;
+  animation: flipOut 0.25s forwards;
 }
 
 @keyframes flipIn {
