@@ -106,29 +106,21 @@ header h1 {
 }
 
 .tile.revealed {
-  animation: flip 0.5s forwards;
+  animation: flip 0.8s forwards;
 }
 
 @keyframes flip {
-  0% { transform: rotateX(0); }
+  0% { transform: rotateX(0); background: transparent; border-color: #565758; }
+  49% { background: transparent; border-color: #565758; }
   50% { transform: rotateX(90deg); }
-  100% { transform: rotateX(0); }
+  51% { background: var(--reveal-color); border-color: var(--reveal-color); }
+  100% { transform: rotateX(0); background: var(--reveal-color); border-color: var(--reveal-color); }
 }
 
-.tile.correct {
-  background: #538d4e;
-  border-color: #538d4e;
-}
+.tile.correct { --reveal-color: #538d4e; }
+.tile.present { --reveal-color: #b59f3b; }
+.tile.absent { --reveal-color: #3a3a3c; }
 
-.tile.present {
-  background: #b59f3b;
-  border-color: #b59f3b;
-}
-
-.tile.absent {
-  background: #3a3a3c;
-  border-color: #3a3a3c;
-}
 
 .keyboard {
   width: 100%;

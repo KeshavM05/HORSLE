@@ -13,6 +13,9 @@ function App() {
   const [gameOver, setGameOver] = useState(false)
   const [shake, setShake] = useState(false)
   const [message, setMessage] = useState('')
+  const [revealedRows, setRevealedRows] = useState<number[]>([])
+  const [revealingTiles, setRevealingTiles] = useState<Record<string, boolean>>({})
+  const [isRevealing, setIsRevealing] = useState(false)
 
   const showMessage = (msg: string, duration = 2000) => {
     setMessage(msg)
@@ -28,26 +31,40 @@ function App() {
     }
 
     const newGuesses = [...guesses, currentGuess]
+    const rowIndex = guesses.length
     setGuesses(newGuesses)
     setCurrentGuess('')
+    setIsRevealing(true)
 
-    if (currentGuess === ANSWER) {
-      setGameOver(true)
-      const trollMessages = [
-        "No way... you guessed HORSE?! 🐴",
-        "Wow, incredible detective work! 🕵️",
-        "Who could have POSSIBLY seen that coming?!",
-        "You're basically a genius. The word was HORSE. In HORSLE.",
-      ]
-      showMessage(trollMessages[Math.min(newGuesses.length - 1, 3)], 5000)
-    } else if (newGuesses.length >= MAX_GUESSES) {
-      setGameOver(true)
-      showMessage("The word was HORSE. It's literally called HORSLE. 🐴💀", 10000)
+    for (let i = 0; i < WORD_LENGTH; i++) {
+      setTimeout(() => {
+        setRevealingTiles(prev => ({ ...prev, [`${rowIndex}-${i}`]: true }))
+      }, i * 500)
     }
+
+    const revealDone = WORD_LENGTH * 500 + 800
+    setTimeout(() => {
+      setRevealedRows(prev => [...prev, rowIndex])
+      setIsRevealing(false)
+
+      if (currentGuess === ANSWER) {
+        setGameOver(true)
+        const trollMessages = [
+          "No way... you guessed HORSE?! 🐴",
+          "Wow, incredible detective work! 🕵️",
+          "Who could have POSSIBLY seen that coming?!",
+          "You're basically a genius. The word was HORSE. In HORSLE.",
+        ]
+        showMessage(trollMessages[Math.min(newGuesses.length - 1, 3)], 5000)
+      } else if (newGuesses.length >= MAX_GUESSES) {
+        setGameOver(true)
+        showMessage("The word was HORSE. It's literally called HORSLE. 🐴💀", 10000)
+      }
+    }, revealDone)
   }, [currentGuess, guesses])
 
   const handleKey = useCallback((key: string) => {
-    if (gameOver) return
+    if (gameOver || isRevealing) return
 
     if (key === 'ENTER') {
       submitGuess()
@@ -56,7 +73,7 @@ function App() {
     } else if (/^[A-Z]$/.test(key) && currentGuess.length < WORD_LENGTH) {
       setCurrentGuess(prev => prev + key)
     }
-  }, [gameOver, currentGuess, submitGuess])
+  }, [gameOver, isRevealing, currentGuess, submitGuess])
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -78,7 +95,8 @@ function App() {
 
   const getKeyStatus = () => {
     const status: Record<string, LetterStatus> = {}
-    guesses.forEach(guess => {
+    guesses.forEach((guess, rowIndex) => {
+      if (!revealedRows.includes(rowIndex)) return
       guess.split('').forEach((letter, i) => {
         const s = getLetterStatus(guess, i)
         if (s === 'correct') status[letter] = 'correct'
@@ -121,17 +139,20 @@ function App() {
               key={rowIndex}
               className={`row ${isCurrentRow && shake ? 'shake' : ''}`}
             >
-              {letters.map((letter: string, colIndex: number) => (
-                <div
-                  key={colIndex}
-                  className={`tile ${guess ? getLetterStatus(guess, colIndex) : ''} ${
-                    letter.trim() ? 'filled' : ''
-                  } ${guess ? 'revealed' : ''}`}
-                  style={guess ? { animationDelay: `${colIndex * 100}ms` } : {}}
-                >
-                  {letter.trim()}
-                </div>
-              ))}
+              {letters.map((letter: string, colIndex: number) => {
+                const tileRevealed = revealingTiles[`${rowIndex}-${colIndex}`]
+                return (
+                  <div
+                    key={colIndex}
+                    className={`tile ${tileRevealed ? getLetterStatus(guess!, colIndex) : ''} ${
+                      letter.trim() ? 'filled' : ''
+                    } ${tileRevealed ? 'revealed' : ''}`}
+                    style={tileRevealed ? { animationDelay: '0ms' } : {}}
+                  >
+                    {letter.trim()}
+                  </div>
+                )
+              })}
             </div>
           )
         })}
