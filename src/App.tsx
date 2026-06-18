@@ -14,7 +14,8 @@ function App() {
   const [shake, setShake] = useState(false)
   const [message, setMessage] = useState('')
   const [revealedRows, setRevealedRows] = useState<number[]>([])
-  const [revealingTiles, setRevealingTiles] = useState<Record<string, boolean>>({})
+  const [tileFlipPhase, setTileFlipPhase] = useState<Record<string, 'in' | 'out'>>({})
+  const [tileColorRevealed, setTileColorRevealed] = useState<Record<string, boolean>>({})
   const [isRevealing, setIsRevealing] = useState(false)
 
   const showMessage = (msg: string, duration = 2000) => {
@@ -36,13 +37,21 @@ function App() {
     setCurrentGuess('')
     setIsRevealing(true)
 
+    const TILE_DELAY = 500
+    const HALF_FLIP = 400
+
     for (let i = 0; i < WORD_LENGTH; i++) {
+      const tileStart = i * TILE_DELAY
       setTimeout(() => {
-        setRevealingTiles(prev => ({ ...prev, [`${rowIndex}-${i}`]: true }))
-      }, i * 500)
+        setTileFlipPhase(prev => ({ ...prev, [`${rowIndex}-${i}`]: 'in' }))
+      }, tileStart)
+      setTimeout(() => {
+        setTileColorRevealed(prev => ({ ...prev, [`${rowIndex}-${i}`]: true }))
+        setTileFlipPhase(prev => ({ ...prev, [`${rowIndex}-${i}`]: 'out' }))
+      }, tileStart + HALF_FLIP)
     }
 
-    const revealDone = WORD_LENGTH * 500 + 800
+    const revealDone = (WORD_LENGTH - 1) * TILE_DELAY + HALF_FLIP * 2
     setTimeout(() => {
       setRevealedRows(prev => [...prev, rowIndex])
       setIsRevealing(false)
@@ -140,14 +149,15 @@ function App() {
               className={`row ${isCurrentRow && shake ? 'shake' : ''}`}
             >
               {letters.map((letter: string, colIndex: number) => {
-                const tileRevealed = revealingTiles[`${rowIndex}-${colIndex}`]
+                const key = `${rowIndex}-${colIndex}`
+                const flipPhase = tileFlipPhase[key]
+                const colorRevealed = tileColorRevealed[key]
                 return (
                   <div
                     key={colIndex}
-                    className={`tile ${tileRevealed ? getLetterStatus(guess!, colIndex) : ''} ${
+                    className={`tile ${colorRevealed && guess ? getLetterStatus(guess, colIndex) : ''} ${
                       letter.trim() ? 'filled' : ''
-                    } ${tileRevealed ? 'revealed' : ''}`}
-                    style={tileRevealed ? { animationDelay: '0ms' } : {}}
+                    } ${flipPhase === 'in' ? 'flip-in' : ''} ${flipPhase === 'out' ? 'flip-out' : ''}`}
                   >
                     {letter.trim()}
                   </div>

@@ -105,21 +105,38 @@ header h1 {
   50% { transform: scale(1.1); }
 }
 
-.tile.revealed {
-  animation: flip 0.8s forwards;
+.tile.flip-in {
+  animation: flipIn 0.4s forwards;
 }
 
-@keyframes flip {
-  0% { transform: rotateX(0); background: transparent; border-color: #565758; }
-  49% { background: transparent; border-color: #565758; }
-  50% { transform: rotateX(90deg); }
-  51% { background: var(--reveal-color); border-color: var(--reveal-color); }
-  100% { transform: rotateX(0); background: var(--reveal-color); border-color: var(--reveal-color); }
+.tile.flip-out {
+  animation: flipOut 0.4s forwards;
 }
 
-.tile.correct { --reveal-color: #538d4e; }
-.tile.present { --reveal-color: #b59f3b; }
-.tile.absent { --reveal-color: #3a3a3c; }
+@keyframes flipIn {
+  0% { transform: rotateX(0); }
+  100% { transform: rotateX(90deg); }
+}
+
+@keyframes flipOut {
+  0% { transform: rotateX(90deg); }
+  100% { transform: rotateX(0); }
+}
+
+.tile.correct {
+  background: #538d4e;
+  border-color: #538d4e;
+}
+
+.tile.present {
+  background: #b59f3b;
+  border-color: #b59f3b;
+}
+
+.tile.absent {
+  background: #3a3a3c;
+  border-color: #3a3a3c;
+}
 
 
 .keyboard {
